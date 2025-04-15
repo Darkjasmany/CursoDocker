@@ -1,0 +1,20 @@
+services:
+  db:
+    container_name: ${MONGO_DB_NAME}
+    image: mongo:6.0
+    volumes:
+      - poke-vol:/data/db
+    ports:
+      - 27017:27017
+    # Es util para reiniciar el contenedor si se detiene
+    restart: always
+    # Variables de entorno
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    # Command indica que cuando corra la imagen ejecute este comando
+    command: ["--auth"]
+
+volumes:
+  poke-vol:
+    external: false
