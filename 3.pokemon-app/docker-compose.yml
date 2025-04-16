@@ -1,11 +1,13 @@
 services:
+  # Nombre del servicio
   db:
     container_name: ${MONGO_DB_NAME}
     image: mongo:6.0
     volumes:
       - poke-vol:/data/db
-    ports:
-      - 27017:27017
+    # TODO Si solo el servicio de mongo-express se conecta a mi BD no es necesario publicar el puerto, mientra menos cosas publiquemos mas seguro mi aplicación
+    # ports:
+    #   - 27017:27017
     # Es util para reiniciar el contenedor si se detiene
     restart: always
     # Variables de entorno
@@ -14,6 +16,19 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     # Command indica que cuando corra la imagen ejecute este comando
     command: ["--auth"]
+
+  mongo-express:
+    # Este servicio depende que la bd este activa
+    depends_on:
+      - db
+    image: mongo-express:1.0.2-20-alpine3.19
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: ${MONGO_DB_NAME}
+    ports:
+      - 8081:8081
+    restart: always
 
 volumes:
   poke-vol:
