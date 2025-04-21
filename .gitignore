@@ -1,17 +1,6 @@
-#nest-graphql
-1.nest-graphql/dist
-1.nest-graphql/node_modules
-
-# postgres-pgadmin
-2.postgres-pgadmin/pgadmin/
-2.postgres-pgadmin/postgres/
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
+**/dist
+**/pgadmin
+**/postgres
+**/node_modules
+**/*.log
+**/*.logs
