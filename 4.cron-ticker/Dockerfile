@@ -13,7 +13,7 @@ RUN npm install
 
 # dest /app
 # COPY app.js ./ # Copiar un solo archivo
-# Copie todo del destino .  y lo peque al working directory ., este trae el problema que copia los modulos de node
+# Copie todo del destino .  y lo peque al working directory ., este trae el problema que copia los modulos de node no es recomendable
 COPY . . 
 
 # Realizar testing
