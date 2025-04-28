@@ -1,6 +1,11 @@
 # Imagen inicial alpine version ligera de linux con node instalado y tiene la carpeta de directorio 
 # /app /usr /lib /opt ...
-FROM node:19.2-alpine3.16
+
+# FROM node:19.2-alpine3.16
+# --platform=linux/amd64 especifica en que plataforma se quiere contruir mi imagen
+# FROM --platform=linux/amd64 node:19.2-alpine3.16
+FROM --platform=$BUILDPLATFORM node:19.2-alpine3.16
+
 
 # es como hacer un cd /app -> Especifica el directorio activo en el cual voy a estar trabajando
 WORKDIR /app
