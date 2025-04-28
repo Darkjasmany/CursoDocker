@@ -1,9 +1,12 @@
 node_modules
 
 Dockerfile
+Dockerfile copy
 
 package-lock.json
 
 .git
 .gitignore
 .dockerignore
+
+README.md

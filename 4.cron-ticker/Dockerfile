@@ -1,29 +1,32 @@
-# Imagen inicial alpine version ligera de linux con node instalado y tiene la carpeta de directorio 
-# /app /usr /lib /opt ...
+FROM node:19.2-alpine3.16 as dependecias
 
-# FROM node:19.2-alpine3.16
-# --platform=linux/amd64 especifica en que plataforma se quiere contruir mi imagen
-# FROM --platform=linux/amd64 node:19.2-alpine3.16
-FROM --platform=$BUILDPLATFORM node:19.2-alpine3.16
-
-
-# es como hacer un cd /app -> Especifica el directorio activo en el cual voy a estar trabajando
+# cd app
 WORKDIR /app
 
-# source: archivos y dest: lugar donde los voy a colocar al working directory
+# Dest / app 
 COPY package.json ./
 
 # Instalar las dependecias
 RUN npm install
 
-# dest /app
-# COPY app.js ./ # Copiar un solo archivo
-# Copie todo del destino .  y lo peque al working directory ., este trae el problema que copia los modulos de node no es recomendable
-# copia todo lo que esta en mi proyecto en el pack realtivo del Dockerfile y lo pega en el workingdirectory
+
+FROM node:19.2-alpine3.16 as builder
+
+WORKDIR /app
+
+# Indicamos que nos copiemos del stage anterior "dependencias" el direcctorio /app/node_modules a nuestro destino ./ => nuestro working directory
+COPY --from=dependecias /app/node_modules ./node_modules
+
 COPY . . 
 
-# Realizar testing
 RUN npm run test
+
+
+FROM node:19.2-alpine3.16 as runner
+
+WORKDIR /app
+
+COPY --from=builder /app ./
 
 # Eliminar archivos y directorios no necesarios en PRODUCCIÓN
 RUN rm -rf tests && rm -rf node_modules 
