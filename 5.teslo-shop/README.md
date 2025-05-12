@@ -23,6 +23,17 @@ http://localhost:3000/api/seed
 ****
 
 
+```
+Linux
+docker buildx build \
+--platform linux/amd64,linux/arm64 \
+-t darkjasmany/teslo-shop:1.1.0 \
+--push .
+
+Windows
+docker buildx build --platform linux/amd64,linux/arm64 -t darkjasmany/teslo-shop:1.1.0 --push .
+```
+
 # Production notes**
 
 
