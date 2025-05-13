@@ -31,7 +31,8 @@ jobs:
 
     - name: Push Docker Image 
       run: |
-        docker push darkjasmany/docker-grphql:0.0.2 ./7.graphql-actions
+        docker push darkjasmany/docker-grphql:0.0.2  
+      # docker push darkjasmany/docker-grphql:0.0.2 ./7.graphql-actions
 
 
 
