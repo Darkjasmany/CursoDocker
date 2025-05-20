@@ -28,11 +28,13 @@ jobs:
     - name: Build Docker Image 
       run: |
         docker build -t darkjasmany/docker-grphql:0.0.2 ./7.graphql-actions
+        docker build -t darkjasmany/docker-grphql:latest ./7.graphql-actions
  # Si estuviera en la raiz del repositorio 
  # docker build -t darkjasmany/docker-grphql:0.0.1 .
 
     - name: Push Docker Image 
       run: |
-        docker push darkjasmany/docker-grphql:0.0.2  
+        docker push darkjasmany/docker-grphql:0.0.2
+        docker push darkjasmany/docker-grphql:latest
       
       #run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
