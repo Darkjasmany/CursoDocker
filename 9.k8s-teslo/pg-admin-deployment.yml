@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pg-admin-deployment
+  labels:
+    app: pg-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pg-admin
+  template:
+    metadata:
+      labels:
+        app: pg-admin
+    spec:
+      containers:
+      - name: pg-admin
+        image: dpage/pgadmin4:6.17
+        ports:
+        - containerPort: 80
+        env:
+        - name: PGADMIN_DEFAULT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pg-admin-secret
+              key: PG_USER_PASSWORD
+        - name: PGADMIN_DEFAULT_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: pg-admin-secret
+              key: PG_USER_EMAIL
+        - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
+          value: "False" # deshabilita la protección de cookies mejorada
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pg-admin-service
+spec:
+  type: NodePort # tipo de servicio, puede ser ClusterIP, NodePort o LoadBalancer
+  # NodePort expone el servicio en un puerto del nodo
+  # ClusterIP es el valor por defecto, expone el servicio en un puerto interno del clúster
+  # LoadBalancer crea un balanceador de carga externo
+  # y expone el servicio en un puerto externo
+  selector:
+    app: pg-admin
+  ports:
+    - protocol: TCP
+      port: 80 # cualquier puerto expone el servicio
+      targetPort: 80 # el puerto del contenedor
+      nodePort: 30200 # puerto del nodo, debe estar en el rango 30000-32767

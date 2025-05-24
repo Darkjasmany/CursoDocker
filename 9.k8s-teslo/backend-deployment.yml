@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 2 # número de réplicas del contenedor
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: klerith/k8s-teslo-backend:1.1.0 # imagen del contenedor
+        ports:
+        - containerPort: 3000 # puerto del contenedor
+        env:
+        - name: APP_VERSION
+          value: "1.1.0"
+        - name: PORT
+          value: "3000"
+        - name: STAGE
+          value: "prod"
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: DB_NAME
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: DB_HOST
+              
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: DB_PORT
+
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: DB_USER
+
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: DB_PASSWORD
+
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: JWT_SECRET
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: NodePort # tipo de servicio, puede ser ClusterIP, NodePort o LoadBalancer
+  # NodePort expone el servicio en un puerto del nodo
+  # ClusterIP es el valor por defecto, expone el servicio en un puerto interno del clúster
+  # LoadBalancer crea un balanceador de carga externo
+  # y expone el servicio en un puerto externo
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 3000 # cualquier puerto expone el servicio
+      targetPort: 3000 # el puerto del contenedor
+      nodePort: 30300 # puerto del nodo, debe estar en el rango 30000-32767
